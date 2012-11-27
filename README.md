@@ -1,4 +1,4 @@
-# caldecott
+# caldecott-client
 TCP over HTTP tunnel.
 
 ## File a Bug

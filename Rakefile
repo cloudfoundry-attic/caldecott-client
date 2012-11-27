@@ -1,4 +1,6 @@
-require 'rake'
+require "rake"
+require "rspec"
+require "rspec/core/rake_task"
 
 desc "Run specs"
 task "spec" => ["bundler:install", "test:spec"]
@@ -14,11 +16,16 @@ namespace "bundler" do
 end
 
 namespace "test" do
-  task "spec" do |t|
-    sh("cd spec && rake spec")
+  desc "Run all specs"
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.rspec_opts = ["--format", "documentation", "--colour"]
   end
 
-  task "spec:rcov" do |t|
-    sh("cd spec && rake spec:rcov")
+  desc "Run all specs with rcov"
+  coverage_dir = File.expand_path(File.join(File.dirname(__FILE__), "coverage"))
+  RSpec::Core::RakeTask.new("spec:rcov") do |t|
+    t.rspec_opts = []
+    t.rcov = true
+    t.rcov_opts = %W{--exclude osx\/objc,gems\/,spec\/,features\/ -o "#{coverage_dir}"}
   end
 end
