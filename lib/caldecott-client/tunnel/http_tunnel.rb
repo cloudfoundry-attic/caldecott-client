@@ -1,7 +1,7 @@
 # Copyright (c) 2009-2011 VMware, Inc.
 
 require "uri"
-require "net/http"
+require "net/https"
 require "json"
 
 module Caldecott
