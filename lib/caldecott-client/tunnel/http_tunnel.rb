@@ -104,7 +104,11 @@ module Caldecott
 
           begin
             http = Net::HTTP.new(@tun_url.host, @tun_url.port)
-            http.use_ssl = @tun_url.scheme == "https"
+
+            if @tun_url.scheme == "https"
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            end
 
             resp = http.request(req)
 
