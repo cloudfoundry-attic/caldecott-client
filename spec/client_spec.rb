@@ -24,7 +24,7 @@ describe "Caldecott Client" do
   it "sends buffered data from tunnel to local server" do
     options = { :tun_url => "http://tunnel.cloudfoundry.com" }
     client = Caldecott::Client::CaldecottClient.new(options)
-    @conn.stub(:sendmsg) { |arg| arg }
+    @conn.stub(:send) { |arg, _| arg }
     @tunnel.stub(:read) do
       @tunnel.stop
       "test"
@@ -32,7 +32,7 @@ describe "Caldecott Client" do
     stub_const("Caldecott::Client::BUFFER_SIZE", 1)
 
     # Should receive all data split by 1 byte
-    @conn.should_receive(:sendmsg).exactly(4).times.and_return("t", "e", "s", "t")
+    @conn.should_receive(:send).exactly(4).times.and_return("t", "e", "s", "t")
     r = Thread.new do
       client.read_from_tunnel(@tunnel, @conn)
     end
