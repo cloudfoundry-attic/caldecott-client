@@ -55,6 +55,7 @@ module Caldecott
         end
 
         req = Net::HTTP::Put.new(@path_in + "/#{@write_seq}")
+        req["Content-Type"] = "application/octet-stream"
         req.body = data
         logger.debug("Sending #{data.bytesize} bytes")
 
