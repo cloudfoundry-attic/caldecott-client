@@ -124,9 +124,6 @@ module Caldecott
             logger.error("Failed #{msg}: #{e.message}")
           end
 
-          if retries >= MAX_RETRIES
-            raise ServerError, "Failed #{msg}"
-          end
         end
 
         resp
