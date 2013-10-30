@@ -7,7 +7,6 @@ require "json"
 module Caldecott
   module Client
     class HttpTunnel < Tunnel
-      MAX_RETRIES = 10
 
       attr_reader :path_in, :path_out, :write_seq, :read_seq
 
