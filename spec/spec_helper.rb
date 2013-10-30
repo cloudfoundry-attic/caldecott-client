@@ -40,6 +40,23 @@ module Caldecott
             to_return(:body => JSON.generate(path_info), :status => code)
       end
 
+      def create_http_with_limited_fails(fail_code, fail_count, success_code)
+
+        failed_counter = 0
+
+        stub_request(:get, TUNNEL_URL).to_return do |request|
+          failed_counter=failed_counter+1
+          if failed_counter<fail_count
+            if fail_code.kind_of? Integer
+              return { :status => fail_code }
+            else
+              raise fail_code
+            end
+          end
+          { :status => success_code }
+        end
+      end
+      
       def create_http_with_error(error)
         stub_request(:any, TUNNEL_URL).to_raise(error)
       end

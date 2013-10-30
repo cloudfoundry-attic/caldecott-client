@@ -146,7 +146,7 @@ module Caldecott
 
           break if in_buf.size < 1
 
-          if in_buf.size > 0
+          while in_buf.size > 0
             n_sent = conn.send(in_buf.slice!(0, BUFFER_SIZE), 0)
             @logger.debug("l <- t: #{n_sent}, buf: #{in_buf.size}")
           end

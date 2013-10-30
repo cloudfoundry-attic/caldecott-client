@@ -7,7 +7,6 @@ require "json"
 module Caldecott
   module Client
     class HttpTunnel < Tunnel
-      MAX_RETRIES = 10
 
       attr_reader :path_in, :path_out, :write_seq, :read_seq
 
@@ -55,6 +54,7 @@ module Caldecott
         end
 
         req = Net::HTTP::Put.new(@path_in + "/#{@write_seq}")
+        req["Content-Type"] = "application/octet-stream"
         req.body = data
         logger.debug("Sending #{data.bytesize} bytes")
 
@@ -123,9 +123,6 @@ module Caldecott
             logger.error("Failed #{msg}: #{e.message}")
           end
 
-          if retries >= MAX_RETRIES
-            raise ServerError, "Failed #{msg}"
-          end
         end
 
         resp

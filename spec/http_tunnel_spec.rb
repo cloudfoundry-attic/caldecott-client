@@ -10,21 +10,18 @@ describe "Client HTTP Tunnel" do
 
   describe "#request" do
     it "attempts to retry timed out connections" do
-      create_http_with_error(Timeout::Error)
-      max_retries = Caldecott::Client::HttpTunnel::MAX_RETRIES
-      test_request_retry_times(@tunnel, max_retries, [200])
+      create_http_with_limited_fails(Timeout::Error, 5, 200)
+      test_request_retry_times(@tunnel, 5, [200])
     end
 
     it "attempts to retry connections that raise exceptions" do
-      create_http_with_error(StandardError)
-      max_retries = Caldecott::Client::HttpTunnel::MAX_RETRIES
-      test_request_retry_times(@tunnel, max_retries, [200])
+      create_http_with_limited_fails(StandardError, 5, 200)
+      test_request_retry_times(@tunnel, 5, [200])
     end
 
     it "attempts to retry connections that don't return success codes" do
-      create_http_with_response_code(400)
-      max_retries = Caldecott::Client::HttpTunnel::MAX_RETRIES
-      test_request_retry_times(@tunnel, max_retries, [200])
+      create_http_with_limited_fails(400, 5, 200)
+      test_request_retry_times(@tunnel, 5, [200])
     end
 
     it "successfully connects when success code is returned" do

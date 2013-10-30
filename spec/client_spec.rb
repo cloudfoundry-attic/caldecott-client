@@ -38,6 +38,35 @@ describe "Caldecott Client" do
     end
     r.join
   end
+  
+  it "sends over 1mb from tunnel to local server" do
+    bigdata_size = (1024*1024)+3086
+    bigdata = (0...bigdata_size).map{ "a" }.join
+    
+    options = { :tun_url => "http://tunnel.cloudfoundry.com" }
+    client = Caldecott::Client::CaldecottClient.new(options)
+    
+    data_received=0
+    
+    @conn.stub(:send) do |arg, _| 
+      data_received = data_received+arg.length
+      arg
+    end
+    @tunnel.stub(:read) do
+      @tunnel.stop
+      bigdata
+    end
+    
+    # Fix this to 1MB incase it is changed in the future
+    stub_const("Caldecott::Client::BUFFER_SIZE", 1024 * 1024)
+
+    @conn.should_receive(:send).exactly(2).times
+    r = Thread.new do
+      client.read_from_tunnel(@tunnel, @conn)
+    end
+    r.join
+    data_received.should eq(bigdata_size)
+  end
 
   it "sends data from local server to tunnel" do
     options = { :tun_url => "http://tunnel.cloudfoundry.com" }
